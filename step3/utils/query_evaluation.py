@@ -317,3 +317,175 @@ def spatial_block_bootstrap(
                 }
             )
     return pd.DataFrame(rows)
+
+
+def binary_score_metrics(
+    labels: np.ndarray,
+    scores: np.ndarray,
+) -> dict[str, float] | None:
+    """Evaluate a continuous binary score, including its best attainable F1."""
+    labels = np.asarray(labels, dtype=bool)
+    scores = np.asarray(scores, dtype=float)
+    valid = np.isfinite(scores)
+    labels = labels[valid]
+    scores = scores[valid]
+    if labels.size == 0 or np.unique(labels).size != 2:
+        return None
+    precision, recall, thresholds = precision_recall_curve(labels, scores)
+    f1 = 2 * precision[:-1] * recall[:-1] / (
+        precision[:-1] + recall[:-1] + 1e-8
+    )
+    best = int(np.nanargmax(f1))
+    return {
+        "auc_roc": float(roc_auc_score(labels, scores)),
+        "auc_pr": float(average_precision_score(labels, scores)),
+        "best_f1": float(f1[best]),
+        "best_threshold": float(thresholds[best]),
+    }
+
+
+def infer_external_center(slide_id: str) -> str:
+    """Map the external breast-cohort slide identifiers to study centers."""
+    import re
+
+    if slide_id.startswith("TCGA-"):
+        return "TCGA-BRCA"
+    if slide_id.startswith("TC_S01_"):
+        return "RUMC"
+    if re.fullmatch(r"\d+[BS]", slide_id):
+        return "JB"
+    return "unknown"
+
+
+def external_slide_id(stem: str) -> str:
+    """Recover the logical slide identifier from an external ROI stem."""
+    import re
+
+    name = stem.split("__", 1)[1] if "__" in stem else stem
+    return re.sub(r"_\[[^\]]+\]$", "", name)
+
+
+def evaluate_external_slides(
+    mask_dir: str | Path,
+    score_dirs: Mapping[str, str | Path],
+    *,
+    positive_values: Sequence[int] = (1, 3),
+    valid_values: Sequence[int] = tuple(range(1, 8)),
+) -> pd.DataFrame:
+    """Pool valid ROI pixels per slide and evaluate cached external score maps."""
+    from PIL import Image
+
+    mask_dir = Path(mask_dir)
+    score_dirs = {name: Path(path) for name, path in score_dirs.items()}
+    mask_stems = {path.stem for path in mask_dir.glob("*.png")}
+    score_stems = [
+        {path.name.removesuffix("_score_map.npy") for path in folder.glob("*_score_map.npy")}
+        for folder in score_dirs.values()
+    ]
+    common = mask_stems.intersection(*score_stems)
+    by_slide: dict[str, list[str]] = {}
+    for stem in sorted(common):
+        by_slide.setdefault(external_slide_id(stem), []).append(stem)
+
+    rows = []
+    for slide_id, stems in by_slide.items():
+        for method, score_dir in score_dirs.items():
+            score_parts = []
+            label_parts = []
+            for stem in stems:
+                mask = np.asarray(Image.open(mask_dir / f"{stem}.png"))
+                if mask.ndim == 3:
+                    mask = mask[..., 0]
+                score_map = np.load(score_dir / f"{stem}_score_map.npy", mmap_mode="r")
+                resized = np.asarray(
+                    Image.fromarray(mask.astype(np.uint8)).resize(
+                        (score_map.shape[1], score_map.shape[0]), Image.Resampling.NEAREST
+                    )
+                )
+                valid = np.isfinite(score_map) & np.isin(resized, valid_values)
+                if valid.any():
+                    score_parts.append(np.asarray(score_map[valid], dtype=np.float32))
+                    label_parts.append(np.isin(resized[valid], positive_values))
+            if not score_parts:
+                continue
+            labels = np.concatenate(label_parts)
+            metrics = binary_score_metrics(labels, np.concatenate(score_parts))
+            if metrics is None:
+                continue
+            rows.append(
+                {
+                    "logical_slide_id": slide_id,
+                    "center": infer_external_center(slide_id),
+                    "method": method,
+                    "n_roi": len(stems),
+                    "n_pixels": int(labels.size),
+                    **metrics,
+                }
+            )
+    return pd.DataFrame(rows)
+
+
+def evaluate_proxy_rois(
+    mask_dir: str | Path,
+    score_dirs: Mapping[str, str | Path],
+    *,
+    positive_fraction_range: tuple[float, float] = (0.10, 0.90),
+    fractional_positive_threshold: float = 0.20,
+) -> pd.DataFrame:
+    """Evaluate cached ROI score maps against a downsampled binary proxy mask."""
+    from PIL import Image
+
+    mask_dir = Path(mask_dir)
+    score_dirs = {name: Path(path) for name, path in score_dirs.items()}
+    mask_stems = {path.stem for path in mask_dir.glob("*.png")}
+    score_stems = [
+        {path.name.removesuffix("_score_map.npy") for path in folder.glob("*_score_map.npy")}
+        for folder in score_dirs.values()
+    ]
+    common = sorted(mask_stems.intersection(*score_stems))
+    rows = []
+    low, high = positive_fraction_range
+    for stem in common:
+        mask = np.asarray(Image.open(mask_dir / f"{stem}.png"))
+        if mask.ndim == 3:
+            mask = mask[..., 0]
+        mask = (mask > 0).astype(np.uint8) * 255
+        reference_map = np.load(
+            next(iter(score_dirs.values())) / f"{stem}_score_map.npy", mmap_mode="r"
+        )
+        fraction = np.asarray(
+            Image.fromarray(mask).resize(
+                (reference_map.shape[1], reference_map.shape[0]),
+                Image.Resampling.BILINEAR,
+            ),
+            dtype=np.float32,
+        ) / 255.0
+        labels = fraction >= fractional_positive_threshold
+        positive_fraction = float(labels.mean())
+        if not low <= positive_fraction <= high:
+            continue
+        for method, score_dir in score_dirs.items():
+            score_map = np.load(score_dir / f"{stem}_score_map.npy", mmap_mode="r")
+            method_labels = labels
+            if score_map.shape != labels.shape:
+                resized = np.asarray(
+                    Image.fromarray(mask).resize(
+                        (score_map.shape[1], score_map.shape[0]),
+                        Image.Resampling.BILINEAR,
+                    ),
+                    dtype=np.float32,
+                ) / 255.0
+                method_labels = resized >= fractional_positive_threshold
+            metrics = binary_score_metrics(method_labels.ravel(), score_map.ravel())
+            if metrics is None:
+                continue
+            rows.append(
+                {
+                    "method": method,
+                    "stem": stem,
+                    "n_pixels": int(method_labels.size),
+                    "pos_fraction": float(method_labels.mean()),
+                    **metrics,
+                }
+            )
+    return pd.DataFrame(rows)
