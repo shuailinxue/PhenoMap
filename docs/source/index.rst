@@ -9,7 +9,7 @@ task, its inputs, the command entry points and the expected visual output.
 Overview
 --------
 
-.. figure:: _static/figures/fig1_workflow.jpg
+.. figure:: _static/figures/Overview.png
    :width: 92%
    :align: center
    :alt: PhenoMap workflow overview
