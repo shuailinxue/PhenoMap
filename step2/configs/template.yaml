@@ -1,0 +1,74 @@
+seed: 42
+
+data:
+  spatial_expression: null
+  mask: null
+  annotation_csv: null
+  spot_diameter_txt: null
+  spot_radius: null
+  spot_radius_ratio: 0.5
+  bulk_expression: null
+  clinical: null
+  bulk_sep: "\t"
+  clinical_sep: "\t"
+  roi: null
+  full_roi: null
+  random_downsample: false
+  downsample_frac: 0.2
+
+phenotype:
+  task: cox
+  time_col: null
+  event_col: null
+  label_col: null
+  label_map: null
+
+preprocess:
+  bulk_tpm_log1p: false
+
+cell_filter:
+  enabled: false
+  cell_type_col: cell_type
+  cell_type_contains: null
+  score_col: null
+  score_col_contains: null
+  min_score: null
+  min_margin: null
+
+model:
+  align_dim: 64
+  gnn_dim: 16
+  heads: 2
+
+training:
+  device: cuda:0
+  epochs: 200
+  lr: 1.0e-3
+  sample_size: 20000
+  subgraph_size: null
+  subgraph_strategy: spatial_block
+  inference_chunk_size: null
+
+loss:
+  mmd_lambda: 1.0e-4
+  vicreg_lambda: 0.1
+  l1_lambda: 0.0
+  vicreg_target_std: 1.0
+  vicreg_cov_weight: 0.1
+  vicreg_var_weight: 0.1
+
+output:
+  dir: outputs/step2
+  score_file: phenotype_scores.parquet
+  checkpoint_file: phenotype_model.pt
+  score_column: phenotype_score
+  mask_non_target_to_zero: false
+  orientation:
+    enabled: false
+    annotation_csv: null
+    cell_type_col: cell_type
+    positive_cell_types: []
+    statistic: median
+    min_cells: 20
+    raw_score_file: raw_phenotype_scores.parquet
+    diagnostics_file: score_orientation.json

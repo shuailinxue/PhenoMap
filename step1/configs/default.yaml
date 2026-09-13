@@ -1,0 +1,42 @@
+extract:
+  mask_path: null
+  image_path: null
+  output_path: null
+  local_pad: 10
+  context_pad: 65
+  batch_size: 512
+  device: null
+
+data:
+  h5_feature_path: null
+  spot_gene_csv: null
+  spot_coord_csv: null
+  spot_diameter_txt: null
+  gene_list_txt: null
+  output_dir: outputs/step1
+
+predict:
+  h5_path: null
+  train_dir: outputs/step1
+  checkpoint: model_final.pt
+  output_csv: outputs/step1/predictions.csv
+  spot_radius: null
+
+pipeline:
+  batch_size: 128
+  radius_ratio: 0.5
+
+model:
+  feat_dim: 1024
+  embed_dim: 512
+  num_layers: 3
+  heads: 4
+  dropout: 0.3
+
+training:
+  lr: 1.0e-5
+  max_epochs: 500
+  accelerator: auto
+  devices: auto
+  log_every_n_steps: 1
+  loss_curve_filename: loss_curve.png

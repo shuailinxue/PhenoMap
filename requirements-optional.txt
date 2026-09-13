@@ -1,0 +1,3 @@
+-r requirements.txt
+cellpose>=3.0
+plotly>=5.20

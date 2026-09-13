@@ -1,0 +1,60 @@
+data:
+  beta_path: null
+  mask_path: null
+  he_path: null
+  sc_expr_path: null
+  he_folder: null
+  mask_folder: null
+  output_dir: outputs/step3
+  patch_size: 224
+  inference_stride: 112
+  tissue_thresh: 0.3
+  filter_background: true
+  skip_existing: true
+  save_visualization: true
+  save_patch_scores: true
+  vis_scale: 0.25
+  vis_alpha: 0.5
+
+target_data:
+  enabled: false
+
+soft_label_tuning:
+  source_filter: none
+
+model:
+  keep_vis_dim: 768
+  keep_text_dim: 768
+  scgpt_dim: 512
+  scgpt_model_dir: null
+  num_genes: 300
+  spatial_hidden_dim: 768
+  spatial_fusion_layers: 2
+  alignment_mapper_layers: 2
+  keep_vision_model: openai/clip-vit-large-patch14
+  keep_text_model: openai/clip-vit-large-patch14
+  disable_text_similarity: false
+  text_prompts:
+    high_risk: Histopathological features associated with the phenotype-positive state.
+    low_risk: Histopathological features associated with the phenotype-negative state.
+
+loss:
+  lambda_align: 0.1
+  lambda_ce: 1.0
+  temperature: 1.0
+  scale_factor: 10.0
+
+training:
+  batch_size: 1024
+  learning_rate: 1.0e-3
+  num_epochs: 100
+  weight_decay: 1.0e-4
+  num_workers: 4
+  checkpoint_dir: checkpoints/step3
+  log_dir: logs/step3
+
+inference:
+  batch_size: 1024
+
+device: cuda:0
+seed: 42
