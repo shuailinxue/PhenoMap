@@ -25,9 +25,9 @@ Run
 
 .. code-block:: bash
 
-   python step3/train_lightning.py \
+   python step3/train.py \
      --mode inference \
-     --config step3/config/config_hbc1_no_target_hbc2.yaml \
+     --config step3/configs/template.yaml \
      --ckpt_path /path/to/last.ckpt
 
 Main outputs
@@ -41,6 +41,6 @@ Main outputs
 Relevant files
 --------------
 
-* ``step3/config/config_hbc1_no_target_hbc2.yaml``
-* ``step3/evaluate_hbc2_ablation.py``
-* ``step3/utils/render_external_score_maps.py``
+* ``step3/train.py``
+* ``step3/configs/template.yaml``
+* ``step3/data/dataset.py``

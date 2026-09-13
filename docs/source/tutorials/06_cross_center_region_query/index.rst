@@ -25,18 +25,18 @@ Train or adapt
 
 .. code-block:: bash
 
-   python step3/train_lightning.py \
+   python step3/train.py \
      --mode train \
-     --config step3/config/config_tiger_roi.yaml
+     --config step3/configs/template.yaml
 
 Query target slides
 -------------------
 
 .. code-block:: bash
 
-   python step3/train_lightning.py \
+   python step3/train.py \
      --mode inference \
-     --config step3/config/config_tiger_roi.yaml \
+     --config step3/configs/template.yaml \
      --ckpt_path /path/to/last.ckpt
 
 Main outputs
@@ -50,7 +50,6 @@ Main outputs
 Relevant files
 --------------
 
-* ``step3/config/config_tiger_roi.yaml``
-* ``step3/config/config_her2_roi.yaml``
-* ``step3/config_ablation/``
-* ``step3/evaluate_tiger_roi_ablation.py``
+* ``step3/train.py``
+* ``step3/configs/template.yaml``
+* ``step3/data/dataset.py``
