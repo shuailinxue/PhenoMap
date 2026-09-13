@@ -1,9 +1,8 @@
 Installation
 ============
 
-PhenoMap was developed on Linux workstations with NVIDIA A100 80GB GPUs. A CUDA-capable GPU
-with at least 24 GB memory is recommended for histology feature extraction,
-large graph training and whole-slide inference.
+Linux and a CUDA-capable GPU with at least 24 GB memory are recommended for
+histology feature extraction, large graph training and whole-slide inference.
 
 Clone repository
 ----------------
@@ -39,11 +38,3 @@ To build the Sphinx documentation locally:
    make -C docs html
 
 The generated HTML pages will be written to ``docs/build/html``.
-
-Runtime notes
--------------
-
-The development environment uses the ``cell2st`` conda environment. On the
-original compute system, proxy variables are configured automatically by the
-environment activation hook. Hugging Face tokens should be provided through
-environment variables rather than committed to YAML configuration files.
