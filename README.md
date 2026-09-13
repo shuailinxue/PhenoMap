@@ -59,4 +59,4 @@ Detailed workflows are maintained in the ReadTheDocs sources under `docs/`.
 
 ## Contact
 
-Questions: xueshuailin@gmail.com
+Questions: xueshuailin@whu.edu.cn
