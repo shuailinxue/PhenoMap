@@ -51,8 +51,11 @@ Canonical resource roles
    canonical score column is ``phenotype_score``. ``differential_expression``
    contains ``names``, ``scores``, ``logfoldchanges`` and ``pvals_adj``.
    ``spatial_expression`` is an AnnData file with cell coordinates in
-   ``obsm['spatial']``. ``step1_checkpoint``, ``step2_config`` and
-   ``source_checkpoint`` are model or regeneration resources.
+   ``obsm['spatial']``. ``step1_checkpoint``, ``step2_config``,
+   ``source_checkpoint`` and ``step3_config`` are model or regeneration
+   resources. PathPT prompt tuning uses the HBC1 source-side resources
+   ``pathpt_support_image`` and ``pathpt_support_mask``; target-cohort images
+   and masks must not be used as support.
 
 ``hbc2``
    ``he_image``, ``nucleus_mask``, ``measured_expression`` and
@@ -61,8 +64,7 @@ Canonical resource roles
    aligned 2-D NumPy score arrays. ``phenomap_concordance_map`` is the accepted
    source-only map used for molecular concordance. ``molecular_pr_scores`` is a
    one-column cell-indexed Parquet table and ``cell_coordinates`` is the
-   reusable coordinate cache. PathPT regeneration additionally uses
-   ``pathpt_support_image`` and ``pathpt_support_mask``.
+   reusable coordinate cache.
 
 ``cohorts``
    ``tcga_expression`` and ``tcga_clinical`` are tab-delimited reference-cohort
@@ -89,13 +91,13 @@ reuses phenotype scores and differential expression before running lightweight
 analysis.
 
 Tutorial 05 can regenerate KEEP and PathPT maps when their optional model
-dependencies and support inputs are available. A missing PhenoMap query map
-requires the final source checkpoint and the full paper-compatible Step 3
-inference configuration; the tutorial never substitutes a short toy training
-run. Tutorial 06 requires external cohort images and proxy masks. PhenoMap maps
-must be generated with the final source checkpoint; optional baseline maps may
-be supplied as precomputed artifacts. Missing items are reported by semantic
-manifest key.
+dependencies and source-side support inputs are available. A missing PhenoMap
+query map requires both ``hbc1.source_checkpoint`` and the final
+paper-compatible ``hbc1.step3_config``; the tutorial never substitutes a toy or
+default configuration. Tutorial 06 requires external cohort images and proxy
+masks. Missing PhenoMap maps likewise require both canonical Step 3 resources;
+optional baseline maps may be supplied as precomputed artifacts. Missing items
+are reported by semantic manifest key.
 
 External resources
 ------------------

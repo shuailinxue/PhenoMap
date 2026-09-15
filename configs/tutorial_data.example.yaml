@@ -25,6 +25,9 @@ resources:
     spatial_expression: data/HBC1/spatial_expression.h5ad
     step2_config: data/HBC1/step2_config.yaml
     source_checkpoint: data/HBC1/source_checkpoint.ckpt
+    step3_config: data/HBC1/step3_config.yaml
+    pathpt_support_image: data/HBC1/support/pathpt_image.tif
+    pathpt_support_mask: data/HBC1/support/pathpt_mask.tif
   hbc2:
     he_image: data/HBC2/he_image.tif
     nucleus_mask: data/HBC2/nucleus_mask.tif
@@ -36,8 +39,6 @@ resources:
     pathpt_query_map: data/HBC2/query_maps/pathpt.npy
     molecular_pr_scores: data/HBC2/molecular_pr_scores.parquet
     cell_coordinates: data/HBC2/cell_coordinates.csv
-    pathpt_support_image: data/HBC2/support/pathpt_image.tif
-    pathpt_support_mask: data/HBC2/support/pathpt_mask.tif
   cohorts:
     tcga_expression: data/cohorts/TCGA/expression.tsv
     tcga_clinical: data/cohorts/TCGA/clinical.tsv

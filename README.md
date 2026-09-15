@@ -29,7 +29,7 @@ extraction and large spatial graphs. Set `HF_TOKEN` in the environment when a
 gated Hugging Face model requires authentication.
 
 Install `requirements-annotation.txt` only when regenerating the optional
-CellTypist or Tangram reference-transfer labels used by Tutorial 02.
+CellTypist, Tangram and Ingest reference-transfer labels used by Tutorial 02.
 
 ## Quick start
 

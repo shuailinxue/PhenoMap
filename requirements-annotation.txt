@@ -1,4 +1,5 @@
 -r requirements.txt
 scanpy>=1.10
+openpyxl>=3.1
 celltypist>=1.6
 tangram-sc>=1.0
