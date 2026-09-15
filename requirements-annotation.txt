@@ -1,0 +1,4 @@
+-r requirements.txt
+scanpy>=1.10
+celltypist>=1.6
+tangram-sc>=1.0

@@ -38,7 +38,8 @@ Tutorials
      - Cell-level phenotype scores and high-risk spatial regions.
    * - 4
      - :doc:`Clinical phenotype analysis <tutorials/04_clinical_phenotype_analysis/index>`
-     - Survival, immune response and mutation-associated analyses.
+     - Local microenvironments, phenotype-associated genes and
+       survival-signature validation.
    * - 5
      - :doc:`Intra-center phenotype region query <tutorials/05_intra_center_region_query/index>`
      - Query phenotype-associated regions within the same center or cohort.

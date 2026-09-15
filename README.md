@@ -28,6 +28,9 @@ optional tutorial visualizations. GPU execution is recommended for feature
 extraction and large spatial graphs. Set `HF_TOKEN` in the environment when a
 gated Hugging Face model requires authentication.
 
+Install `requirements-annotation.txt` only when regenerating the optional
+CellTypist or Tangram reference-transfer labels used by Tutorial 02.
+
 ## Quick start
 
 ```bash
@@ -41,8 +44,17 @@ python step2/scripts/infer_tiled.py --help
 python step3/train.py --help
 ```
 
-Copy each YAML template and fill its input paths before running a full workflow.
-Detailed stage-specific notes are provided in each step directory.
+Copy each stage YAML template and fill its input paths before running a full
+workflow. Tutorials 01–06 use a separate semantic data manifest:
+
+```bash
+cp configs/tutorial_data.example.yaml configs/tutorial_data.local.yaml
+export PHENOMAP_TUTORIAL_CONFIG="$PWD/configs/tutorial_data.local.yaml"  # optional
+```
+
+The local manifest is ignored by Git. It maps documented resource roles to
+your data without exposing machine-specific paths in notebooks. See the
+[dataset contract](docs/source/datasets.rst) for schemas and cache behavior.
 
 ## Repository layout
 
@@ -50,6 +62,8 @@ Detailed stage-specific notes are provided in each step directory.
 step1/          cell-level expression reconstruction
 step2/          spatial phenotype learning
 step3/          cross-slide phenotype query
+phenomap/        public tutorial data and cell-annotation interfaces
+configs/         public tutorial data-manifest example
 preprocessing/  reusable input preparation
 baselines/      upstream baseline references
 docs/           ReadTheDocs sources

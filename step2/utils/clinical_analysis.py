@@ -63,14 +63,23 @@ def define_pr_groups(
 
 
 def load_spatial_expression(
-    h5ad_path: Path, beta: pd.DataFrame
+    h5ad_path: Path,
+    phenotype_scores: pd.DataFrame,
+    *,
+    score_col: str = "beta",
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Load cell labels, coordinates, scores, and expression from an AnnData file."""
     import anndata as ad
 
     adata = ad.read_h5ad(h5ad_path)
     cell_ids = adata.obs_names.astype(str)
-    beta = _string_index(beta)
+    phenotype_scores = _string_index(phenotype_scores)
+    if score_col not in phenotype_scores and phenotype_scores.shape[1] == 1:
+        phenotype_scores = phenotype_scores.rename(
+            columns={phenotype_scores.columns[0]: score_col}
+        )
+    if score_col not in phenotype_scores:
+        raise ValueError(f"Phenotype score table does not contain {score_col!r}.")
     label_col = "Original_Label" if "Original_Label" in adata.obs else "Ensemble_Label"
     cells = pd.DataFrame(
         {
@@ -80,7 +89,7 @@ def load_spatial_expression(
         },
         index=cell_ids,
     )
-    cells = cells.join(beta[["beta"]], how="inner")
+    cells = cells.join(phenotype_scores[[score_col]], how="inner")
     matrix = adata.X.toarray() if hasattr(adata.X, "toarray") else np.asarray(adata.X)
     expression = pd.DataFrame(matrix, index=cell_ids, columns=adata.var_names.astype(str))
     expression = expression.loc[cells.index]

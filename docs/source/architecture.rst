@@ -62,3 +62,13 @@ Design principles
   repeated without rerunning upstream neural models.
 * Treat large generated artifacts as external experiment outputs rather than
   source-code files.
+
+Public reproducibility interfaces
+---------------------------------
+
+The lightweight ``phenomap`` package contains interfaces shared by the public
+tutorials. ``phenomap.data`` resolves semantic resource keys from one YAML
+manifest, while ``phenomap.cell_annotation`` contains marker selection,
+single-cell annotation and deterministic ensemble construction used by
+Tutorial 02. Stage-specific plotting remains under ``step1/utils``,
+``step2/utils`` and ``step3/utils``.

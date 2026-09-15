@@ -1,0 +1,61 @@
+version: 1
+resources:
+  hbc1:
+    he_image: data/HBC1/he_image.tif
+    nucleus_mask: data/HBC1/nucleus_mask.tif
+    cell_features: data/HBC1/cell_features.h5
+    pseudo_spots: data/HBC1/pseudo_spots.csv
+    spot_locations: data/HBC1/spot_locations.csv
+    spot_diameter: data/HBC1/spot_diameter.txt
+    gene_list: data/HBC1/genes.txt
+    measured_expression: data/HBC1/measured_expression.csv
+    generated_expression: data/HBC1/generated_expression.csv
+    step1_checkpoint: data/HBC1/checkpoints/model_final.pt
+    reference_marker_table: data/reference/breast_atlas_markers.xlsx
+    reference_atlas: data/reference/breast_atlas.h5ad
+    marker_cache: data/HBC1/cell_annotation/marker_genes.json
+    phenomap_cell_types: data/HBC1/phenomap_cell_types.csv
+    measured_cell_types: data/HBC1/measured_cell_types.csv
+    celltypist_probabilities: data/HBC1/cell_annotation/celltypist_probabilities.csv
+    tangram_probabilities: data/HBC1/cell_annotation/tangram_probabilities.csv
+    ingest_labels: data/HBC1/cell_annotation/ingest_labels.csv
+    reference_cell_types: data/HBC1/reference_cell_types.csv
+    phenotype_scores: data/HBC1/phenotype_scores.parquet
+    differential_expression: data/HBC1/differential_expression.csv
+    spatial_expression: data/HBC1/spatial_expression.h5ad
+    step2_config: data/HBC1/step2_config.yaml
+    source_checkpoint: data/HBC1/source_checkpoint.ckpt
+  hbc2:
+    he_image: data/HBC2/he_image.tif
+    nucleus_mask: data/HBC2/nucleus_mask.tif
+    measured_expression: data/HBC2/measured_expression.csv
+    reference_cell_types: data/HBC2/reference_cell_types.csv
+    phenomap_query_map: data/HBC2/query_maps/phenomap.npy
+    phenomap_concordance_map: data/HBC2/query_maps/phenomap_concordance.npy
+    keep_query_map: data/HBC2/query_maps/keep.npy
+    pathpt_query_map: data/HBC2/query_maps/pathpt.npy
+    molecular_pr_scores: data/HBC2/molecular_pr_scores.parquet
+    cell_coordinates: data/HBC2/cell_coordinates.csv
+    pathpt_support_image: data/HBC2/support/pathpt_image.tif
+    pathpt_support_mask: data/HBC2/support/pathpt_mask.tif
+  cohorts:
+    tcga_expression: data/cohorts/TCGA/expression.tsv
+    tcga_clinical: data/cohorts/TCGA/clinical.tsv
+    gse103091_expression: data/cohorts/GSE103091/expression.tsv
+    gse103091_clinical: data/cohorts/GSE103091/clinical.tsv
+    gse7390_expression: data/cohorts/GSE7390/expression.tsv
+    gse7390_clinical: data/cohorts/GSE7390/clinical.tsv
+  cross_center:
+    images: data/cross_center/images
+    masks: data/cross_center/masks
+    phenomap_score_maps: data/cross_center/query_maps/phenomap
+    pathpt_score_maps: data/cross_center/query_maps/pathpt
+    keep_score_maps: data/cross_center/query_maps/keep
+    evaluation_cache: data/cross_center/evaluation.csv
+  her2:
+    images: data/HER2/images
+    proxy_masks: data/HER2/proxy_masks
+    phenomap_score_maps: data/HER2/query_maps/phenomap
+    pathpt_score_maps: data/HER2/query_maps/pathpt
+    keep_score_maps: data/HER2/query_maps/keep
+    evaluation_cache: data/HER2/evaluation.csv

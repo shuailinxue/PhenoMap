@@ -2,6 +2,7 @@ __pycache__/
 *.py[cod]
 *.so
 .pytest_cache/
+.cache/
 .ipynb_checkpoints/
 
 .vscode/
@@ -9,6 +10,7 @@ __pycache__/
 .env
 .venv/
 venv/
+configs/tutorial_data.local.yaml
 
 /data/
 /datasets/

@@ -27,6 +27,13 @@ Install dependencies
 
    pip install -r requirements.txt
 
+To regenerate the optional reference-transfer labels in Tutorial 02, install
+the annotation extras:
+
+.. code-block:: bash
+
+   pip install -r requirements-annotation.txt
+
 Documentation dependencies
 --------------------------
 
